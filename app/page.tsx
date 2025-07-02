@@ -13,39 +13,7 @@ import Header from "@/components/Header"
 import PlayerRankings from "@/components/PlayerRankings"
 import RecentGames from "@/components/RecentGames"
 import TeamMembersList from "@/components/TeamMembersList"
-
-interface Player {
-  id: string
-  name: string
-  createdAt: string
-  updatedAt: string
-}
-
-interface PlayerStats {
-  id: string
-  name: string
-  totalGames: number
-  wins: number
-  losses: number
-  winRate: number
-  spymasterGames: number
-  spymasterWins: number
-  spymasterWinRate: number
-}
-
-interface Game {
-  id: string
-  redTeamSpymaster: Player
-  blueTeamSpymaster: Player
-  winningTeam: 'red' | 'blue'
-  playedAt: string
-  notes?: string
-  participants: Array<{
-    player: Player
-    team: 'red' | 'blue'
-    isSpymaster: boolean
-  }>
-}
+import { Player, PlayerStats, Game } from "@/types"
 
 export default function CodenamesLeaderboard() {
   const { data: session, status } = useSession()
@@ -219,13 +187,11 @@ export default function CodenamesLeaderboard() {
       })
       
       if (response.ok) {
-        
         setRedTeamPlayers([])
         setBlueTeamPlayers([])
         setRedSpymaster("")
         setBlueSpymaster("")
         setGameNotes("")
-        
         
         await fetchStats()
         toast({
@@ -281,9 +247,7 @@ export default function CodenamesLeaderboard() {
     <div className="min-h-screen relative">
       <Image src="/codenames-bg.png" alt="Codenames Background" width={48} height={48} className="absolute top-0 left-0 w-full h-full object-cover opacity-70" />
       <div className="relative z-10 container mx-auto px-6 py-8">
-        
         <Header />
-
         <Tabs defaultValue="leaderboard" className="w-full max-w-7xl mx-auto">
           <TabsList className="grid w-full grid-cols-3 mb-8 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50">
             <TabsTrigger
@@ -302,23 +266,19 @@ export default function CodenamesLeaderboard() {
               Manage Players
             </TabsTrigger>
           </TabsList>
-
           <TabsContent value="leaderboard">
             <div className="grid gap-6 lg:grid-cols-2">
               <PlayerRankings playerStats={playerStats} />
               <RecentGames games={games} />
             </div>
           </TabsContent>
-
           <TabsContent value="game">
             <Card className="relative bg-slate-900/80 backdrop-blur-sm max-w-6xl mx-auto overflow-hidden">
-                
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-50 pointer-events-none select-none"
                 style={{ backgroundImage: "url('/split-teams.webp')" }}
               />
               <div className="absolute inset-0 bg-gradient-to-br from-red-950/40 via-slate-900/60 to-blue-950/40 pointer-events-none" />
-
               <CardHeader className="relative z-10 text-center ">
                 <CardTitle className="text-2xl font-bold text-white flex items-center justify-center gap-3">
                   <Target className="w-6 h-6 text-red-400" />
@@ -326,17 +286,12 @@ export default function CodenamesLeaderboard() {
                   <Target className="w-6 h-6 text-blue-400" />
                 </CardTitle>
               </CardHeader>
-              
               <CardContent className="relative z-10 p-8">
-                
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                  
                   <div className="p-6">
                     <div className="flex items-center justify-center gap-3 mb-6">
                       <h3 className="text-xl font-bold text-red-400">Red Team</h3>
                     </div>
-                    
-                    
                     <TeamMembersList
                       teamPlayers={redTeamPlayers}
                       players={players}
@@ -349,14 +304,10 @@ export default function CodenamesLeaderboard() {
                       availablePlayers={getAvailablePlayers()}
                     />
                   </div>
-
-                  
                   <div className="p-6">
                     <div className="flex items-center justify-center gap-3 mb-6">
                       <h3 className="text-xl font-bold text-blue-400">Blue Team</h3>
                     </div>
-                    
-                    
                     <TeamMembersList
                       teamPlayers={blueTeamPlayers}
                       players={players}
@@ -370,8 +321,6 @@ export default function CodenamesLeaderboard() {
                     />
                   </div>
                 </div>
-
-                
                 <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                   <Button
                     onClick={() => recordGame('red')}
@@ -381,9 +330,7 @@ export default function CodenamesLeaderboard() {
                     <Trophy className="w-5 h-5 mr-2" />
                     Red Team Victory
                   </Button>
-                  
                   <div className="text-slate-400 text-sm font-medium">VS</div>
-                  
                   <Button
                     onClick={() => recordGame('blue')}
                     disabled={loading || !redSpymaster || !blueSpymaster || redTeamPlayers.length === 0 || blueTeamPlayers.length === 0}
@@ -393,8 +340,6 @@ export default function CodenamesLeaderboard() {
                     Blue Team Victory
                   </Button>
                 </div>
-                
-                
                 <div className="flex justify-between gap-8 mt-6 px-8 text-sm">
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${redSpymaster ? 'bg-green-500' : 'bg-red-500'}`} />
@@ -408,7 +353,6 @@ export default function CodenamesLeaderboard() {
               </CardContent>
             </Card>
           </TabsContent>
-
           <TabsContent value="players">
             <Card className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 max-w-2xl mx-auto">
               <CardHeader>
@@ -420,8 +364,7 @@ export default function CodenamesLeaderboard() {
                   Add or remove players from your game group
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                          
+              <CardContent className="space-y-6">       
                 <div className="flex gap-2">
                   <Input
                     value={newPlayerName}
@@ -438,9 +381,7 @@ export default function CodenamesLeaderboard() {
                     <Plus className="w-4 h-4 mr-2" />
                     Add Player
                   </Button>
-                </div>
-
-                          
+                </div>       
                 <div className="space-y-2">
                   {players.map((player) => (
                     <div

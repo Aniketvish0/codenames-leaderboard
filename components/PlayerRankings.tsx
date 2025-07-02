@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { PlayerStats } from "@/types/leaderboard"
+import { PlayerStats } from "@/types"
 
 function getInitials(name: string) {
   return name

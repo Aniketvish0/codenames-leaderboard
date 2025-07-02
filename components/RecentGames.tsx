@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Eye } from "lucide-react"
-import { Game } from "@/types/leaderboard"
+import { Game } from "@/types"
 
 interface Props {
   games: Game[]

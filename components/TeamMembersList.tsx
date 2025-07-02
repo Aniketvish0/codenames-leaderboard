@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Crown, Trash2, Users, ChevronDown, ChevronUp } from "lucide-react"
-import { Player } from "@/types/leaderboard"
+import { Player } from "@/types"
 
 interface Props {
   teamPlayers: string[]
