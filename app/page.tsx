@@ -312,7 +312,7 @@ export default function CodenamesLeaderboard() {
 
           <TabsContent value="game">
             <Card className="relative bg-slate-900/80 backdrop-blur-sm max-w-6xl mx-auto overflow-hidden">
-              {/* Enhanced background with overlay */}
+                
               <div
                 className="absolute inset-0 bg-cover bg-center opacity-50 pointer-events-none select-none"
                 style={{ backgroundImage: "url('/split-teams.webp')" }}
@@ -328,15 +328,15 @@ export default function CodenamesLeaderboard() {
               </CardHeader>
               
               <CardContent className="relative z-10 p-8">
-                {/* Team Setup Grid */}
+                
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                  {/* Red Team */}
+                  
                   <div className="p-6">
                     <div className="flex items-center justify-center gap-3 mb-6">
                       <h3 className="text-xl font-bold text-red-400">Red Team</h3>
                     </div>
                     
-                    {/* Red Team Members */}
+                    
                     <TeamMembersList
                       teamPlayers={redTeamPlayers}
                       players={players}
@@ -350,13 +350,13 @@ export default function CodenamesLeaderboard() {
                     />
                   </div>
 
-                  {/* Blue Team */}
+                  
                   <div className="p-6">
                     <div className="flex items-center justify-center gap-3 mb-6">
                       <h3 className="text-xl font-bold text-blue-400">Blue Team</h3>
                     </div>
                     
-                    {/* Blue Team Members */}
+                    
                     <TeamMembersList
                       teamPlayers={blueTeamPlayers}
                       players={players}
