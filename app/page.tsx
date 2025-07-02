@@ -1,20 +1,18 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { useSession, signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Trophy, Users, Plus, Trash2, Target } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import CodenamesHeader from "@/components/Header"
+import Image from "next/image"
+import Header from "@/components/Header"
 import PlayerRankings from "@/components/PlayerRankings"
 import RecentGames from "@/components/RecentGames"
-import Image from "next/image"
+import TeamMembersList from "@/components/TeamMembersList"
 
 interface Player {
   id: string
@@ -284,7 +282,7 @@ export default function CodenamesLeaderboard() {
       <Image src="/codenames-bg.png" alt="Codenames Background" width={48} height={48} className="absolute top-0 left-0 w-full h-full object-cover opacity-70" />
       <div className="relative z-10 container mx-auto px-6 py-8">
         
-        <CodenamesHeader />
+        <Header />
 
         <Tabs defaultValue="leaderboard" className="w-full max-w-7xl mx-auto">
           <TabsList className="grid w-full grid-cols-3 mb-8 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50">
@@ -313,162 +311,99 @@ export default function CodenamesLeaderboard() {
           </TabsContent>
 
           <TabsContent value="game">
-            <Card className="bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 max-w-4xl mx-auto">
-              <CardHeader>
-                <CardTitle className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Target className="w-5 h-5 text-slate-400" />
-                  Record New Game
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Set up teams and record the game result
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-red-400 flex items-center gap-2">
-                      Red Team
-                    </h3>
-                    
-                    
-                    <div>
-                      <label className="text-sm text-slate-300 mb-2 block">Spymaster</label>
-                      <Select value={redSpymaster} onValueChange={setRedSpymaster}>
-                        <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white">
-                          <SelectValue placeholder="Select red spymaster" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {redTeamPlayers.map(playerId => {
-                            const player = players.find(p => p.id === playerId)
-                            return player ? (
-                              <SelectItem key={player.id} value={player.id}>
-                                {player.name}
-                              </SelectItem>
-                            ) : null
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </div>
+            <Card className="relative bg-slate-900/80 backdrop-blur-sm max-w-6xl mx-auto overflow-hidden">
+              {/* Enhanced background with overlay */}
+              <div
+                className="absolute inset-0 bg-cover bg-center opacity-50 pointer-events-none select-none"
+                style={{ backgroundImage: "url('/split-teams.webp')" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-red-950/40 via-slate-900/60 to-blue-950/40 pointer-events-none" />
 
-                    
-                    <div>
-                      <label className="text-sm text-slate-300 mb-2 block">Team Members</label>
-                      <div className="space-y-2 max-h-40 overflow-y-auto">
-                        {redTeamPlayers.map(playerId => {
-                          const player = players.find(p => p.id === playerId)
-                          return player ? (
-                            <div key={player.id} className="flex items-center justify-between p-2 bg-red-600/10 border border-red-500/30 rounded-lg">
-                              <span className="text-white text-sm">{player.name}</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => removeFromTeam(player.id, 'red')}
-                                className="text-red-400 hover:text-red-300"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ) : null
-                        })}
-                      </div>
-                      
-                      <Select onValueChange={(playerId) => addToTeam(playerId, 'red')}>
-                        <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white mt-2">
-                          <SelectValue placeholder="Add player to red team" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getAvailablePlayers().map(player => (
-                            <SelectItem key={player.id} value={player.id}>
-                              {player.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+              <CardHeader className="relative z-10 text-center ">
+                <CardTitle className="text-2xl font-bold text-white flex items-center justify-center gap-3">
+                  <Target className="w-6 h-6 text-red-400" />
+                  Record New Game
+                  <Target className="w-6 h-6 text-blue-400" />
+                </CardTitle>
+              </CardHeader>
+              
+              <CardContent className="relative z-10 p-8">
+                {/* Team Setup Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                  {/* Red Team */}
+                  <div className="p-6">
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                      <h3 className="text-xl font-bold text-red-400">Red Team</h3>
                     </div>
+                    
+                    {/* Red Team Members */}
+                    <TeamMembersList
+                      teamPlayers={redTeamPlayers}
+                      players={players}
+                      spymaster={redSpymaster}
+                      teamColor="red"
+                      onSetSpymaster={setRedSpymaster}
+                      onRemoveFromTeam={(playerId) => removeFromTeam(playerId, 'red')}
+                      onAddToTeam={(playerId) => addToTeam(playerId, 'red')}
+                      getInitials={getInitials}
+                      availablePlayers={getAvailablePlayers()}
+                    />
                   </div>
 
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-blue-400 flex items-center gap-2">
-                      Blue Team
-                    </h3>
-                    
-                    
-                    <div>
-                      <label className="text-sm text-slate-300 mb-2 block">Spymaster</label>
-                      <Select value={blueSpymaster} onValueChange={setBlueSpymaster}>
-                        <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white">
-                          <SelectValue placeholder="Select blue spymaster" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {blueTeamPlayers.map(playerId => {
-                            const player = players.find(p => p.id === playerId)
-                            return player ? (
-                              <SelectItem key={player.id} value={player.id}>
-                                {player.name}
-                              </SelectItem>
-                            ) : null
-                          })}
-                        </SelectContent>
-                      </Select>
+                  {/* Blue Team */}
+                  <div className="p-6">
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                      <h3 className="text-xl font-bold text-blue-400">Blue Team</h3>
                     </div>
-
                     
-                    <div>
-                      <label className="text-sm text-slate-300 mb-2 block">Team Members</label>
-                      <div className="space-y-2 max-h-40 overflow-y-auto">
-                        {blueTeamPlayers.map(playerId => {
-                          const player = players.find(p => p.id === playerId)
-                          return player ? (
-                            <div key={player.id} className="flex items-center justify-between p-2 bg-blue-600/10 border border-blue-500/30 rounded-lg">
-                              <span className="text-white text-sm">{player.name}</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => removeFromTeam(player.id, 'blue')}
-                                className="text-blue-400 hover:text-blue-300"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ) : null
-                        })}
-                      </div>
-                      
-                      <Select onValueChange={(playerId) => addToTeam(playerId, 'blue')}>
-                        <SelectTrigger className="bg-slate-800/50 border-slate-600 text-white mt-2">
-                          <SelectValue placeholder="Add player to blue team" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {getAvailablePlayers().map(player => (
-                            <SelectItem key={player.id} value={player.id}>
-                              {player.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    {/* Blue Team Members */}
+                    <TeamMembersList
+                      teamPlayers={blueTeamPlayers}
+                      players={players}
+                      spymaster={blueSpymaster}
+                      teamColor="blue"
+                      onSetSpymaster={setBlueSpymaster}
+                      onRemoveFromTeam={(playerId) => removeFromTeam(playerId, 'blue')}
+                      onAddToTeam={(playerId) => addToTeam(playerId, 'blue')}
+                      getInitials={getInitials}
+                      availablePlayers={getAvailablePlayers()}
+                    />
                   </div>
                 </div>
 
                 
-                <div className="flex gap-4 justify-center pt-4">
+                <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                   <Button
                     onClick={() => recordGame('red')}
                     disabled={loading || !redSpymaster || !blueSpymaster || redTeamPlayers.length === 0 || blueTeamPlayers.length === 0}
-                    className="bg-red-600 hover:bg-red-700 text-white px-8"
+                    className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-12 py-4 text-lg font-semibold shadow-lg hover:shadow-red-500/25 transition-all transform hover:scale-105 disabled:transform-none disabled:opacity-50"
                   >
-                    Red Team Wins
+                    <Trophy className="w-5 h-5 mr-2" />
+                    Red Team Victory
                   </Button>
+                  
+                  <div className="text-slate-400 text-sm font-medium">VS</div>
+                  
                   <Button
                     onClick={() => recordGame('blue')}
                     disabled={loading || !redSpymaster || !blueSpymaster || redTeamPlayers.length === 0 || blueTeamPlayers.length === 0}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-12 py-4 text-lg font-semibold shadow-lg hover:shadow-blue-500/25 transition-all transform hover:scale-105 disabled:transform-none disabled:opacity-50"
                   >
-                    Blue Team Wins
+                    <Trophy className="w-5 h-5 mr-2" />
+                    Blue Team Victory
                   </Button>
+                </div>
+                
+                
+                <div className="flex justify-between gap-8 mt-6 px-8 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${redSpymaster ? 'bg-green-500' : 'bg-red-500'}`} />
+                    <span className="text-slate-300">Red Spymaster {redSpymaster ? 'Ready' : 'Needed'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${blueSpymaster ? 'bg-green-500' : 'bg-red-500'}`} />
+                    <span className="text-slate-300">Blue Spymaster {blueSpymaster ? 'Ready' : 'Needed'}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -532,7 +467,7 @@ export default function CodenamesLeaderboard() {
                     </div>
                   ))}
                   {players.length === 0 && (
-                    <div className="text-center py-8 text-slate-400">
+                    <div className="text-center py-8 text-white">
                       No players added yet. Add your first player above!
                     </div>
                   )}
